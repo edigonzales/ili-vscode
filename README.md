@@ -31,3 +31,6 @@ vsce package
 - Readme anpassen
 - repository in package.json
 - licence file
+
+
+https://marketplace.visualstudio.com/manage/publishers/edigonzales
