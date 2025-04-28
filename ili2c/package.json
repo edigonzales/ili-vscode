@@ -1,8 +1,8 @@
 {
   "name": "ili2c",
   "displayName": "INTERLIS compiler",
-  "description": "INTERLIS compilation with a web service.",
-  "version": "0.0.1",
+  "description": "INTERLIS compiler (web service)",
+  "version": "0.0.2",
   "publisher": "edigonzales",
   "license": "MIT",
   "repository": {

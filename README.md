@@ -34,3 +34,6 @@ vsce package
 
 
 https://marketplace.visualstudio.com/manage/publishers/edigonzales
+
+vsce login <publisher id>
+

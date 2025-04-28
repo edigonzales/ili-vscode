@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 import FormData from 'form-data';
 
 export function activate(context: vscode.ExtensionContext) {
-    const outputChannel = vscode.window.createOutputChannel('File Compilation');
+    const outputChannel = vscode.window.createOutputChannel('INTERLIS compiler');
 
     let validateCommand = vscode.commands.registerCommand('ili2c.compileFile', async () => {
         const editor = vscode.window.activeTextEditor;
@@ -35,7 +35,7 @@ export function activate(context: vscode.ExtensionContext) {
             if (response.ok) {
                 vscode.window.showInformationMessage('Compilation successful!');
             } else {
-                vscode.window.showErrorMessage('Compilation failed. Check the "File Compilation" output.');
+                vscode.window.showErrorMessage('Compilation failed. Check the "INTERLIS compiler" output.');
             }
         } catch (error) {
             vscode.window.showErrorMessage(`Compilation error: ${error}`);
