@@ -12,6 +12,9 @@ export function activate(context: vscode.ExtensionContext) {
             return;
         }
 
+        const config = vscode.workspace.getConfiguration('interlisCompiler');
+        const compilerUrl = config.get<string>('url') || 'https://ili2c.sogeo.services/api/compile';
+
         const document = editor.document;
         const content = document.getText();
         const fileName = document.fileName.split('/').pop() || 'file.ili'; // default filename
@@ -20,7 +23,7 @@ export function activate(context: vscode.ExtensionContext) {
             const form = new FormData();
             form.append('file', Buffer.from(content), fileName);
 
-            const response = await fetch('https://ili2.sogeo.services/api/compile', {
+            const response = await fetch(compilerUrl, {
                 method: 'POST',
                 body: form,
                 headers: form.getHeaders()
