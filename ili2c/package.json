@@ -34,7 +34,11 @@
     "commands": [
       {
         "command": "ili2c.compileFile",
-        "title": "INTERLIS: Compiles current file"
+        "title": "INTERLIS: Compile current file"
+      },
+      {
+        "command": "ili.prettyPrint",
+        "title": "INTERLIS: Pretty print file"
       }
     ],
     "keybindings": [
@@ -42,6 +46,12 @@
         "command": "ili2c.compileFile",
         "key": "ctrl+alt+c",
         "mac": "cmd+alt+c",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "ili.prettyPrint",
+        "key": "ctrl+alt+p",
+        "mac": "cmd+alt+p",
         "when": "editorTextFocus"
       }
     ],
