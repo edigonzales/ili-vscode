@@ -5,7 +5,7 @@ import FormData from 'form-data';
 export function activate(context: vscode.ExtensionContext) {
     const outputChannel = vscode.window.createOutputChannel('INTERLIS compiler');
 
-    let validateCommand = vscode.commands.registerCommand('ili2c.compileFile', async () => {
+    let compileCommand = vscode.commands.registerCommand('ili2c.compileFile', async () => {
         const editor = vscode.window.activeTextEditor;
         if (!editor) {
             vscode.window.showErrorMessage('No active editor found.');
@@ -33,19 +33,21 @@ export function activate(context: vscode.ExtensionContext) {
 
             outputChannel.clear();
             outputChannel.appendLine(logText);
-            outputChannel.show();
+            //outputChannel.show();
 
             if (response.ok) {
                 vscode.window.showInformationMessage('Compilation successful!');
             } else {
                 vscode.window.showErrorMessage('Compilation failed. Check the "INTERLIS compiler" output.');
+                outputChannel.show(true);
             }
         } catch (error) {
             vscode.window.showErrorMessage(`Compilation error: ${error}`);
+            outputChannel.show(true);
         }
     });
 
-    context.subscriptions.push(validateCommand);
+    context.subscriptions.push(compileCommand);
 
     vscode.workspace.onDidSaveTextDocument((document) => {
         if (vscode.window.activeTextEditor?.document === document) {

@@ -34,7 +34,7 @@
     "commands": [
       {
         "command": "ili2c.compileFile",
-        "title": "Compiles Current File"
+        "title": "INTERLIS: Compiles current file"
       }
     ],
     "keybindings": [
