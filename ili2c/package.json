@@ -33,17 +33,21 @@
   "contributes": {
     "commands": [
       {
-        "command": "ili2c.compileFile",
+        "command": "ili.compileFile",
         "title": "INTERLIS: Compile current file"
       },
       {
         "command": "ili.prettyPrint",
         "title": "INTERLIS: Pretty print file"
+      },
+      {
+        "command": "ili.createUmlDiagram",
+        "title": "INTERLIS: Create uml diagram"
       }
     ],
     "keybindings": [
       {
-        "command": "ili2c.compileFile",
+        "command": "ili.compileFile",
         "key": "ctrl+alt+c",
         "mac": "ctrl+cmd+c",
         "when": "editorTextFocus"
@@ -53,6 +57,12 @@
         "key": "ctrl+alt+p",
         "mac": "ctrl+cmd+p",
         "when": "editorTextFocus"
+      },
+      {
+        "command": "ili.createUmlDiagram",
+        "key": "ctrl+alt+d",
+        "mac": "ctrl+cmd+d",
+        "when": "editorTextFocus"
       }
     ],
     "configuration": {
@@ -61,13 +71,18 @@
       "properties": {
         "interlisCompiler.url": {
           "type": "string",
-          "default": "https://ili2c.sogeo.services/api/compile",
+          "default": "https://ili.sogeo.services/api/compile",
           "description": "The URL of the web service used for compiling files."
         },
         "interlisPrettyPrint.url": {
           "type": "string",
-          "default": "https://ili2c.sogeo.services/api/prettyprint",
+          "default": "https://ili.sogeo.services/api/prettyprint",
           "description": "The URL of the web service used for pretty printing files."
+        },
+        "interlisUmlDiagram.url": {
+          "type": "string",
+          "default": "https://ili.sogeo.services/api/uml",
+          "description": "The URL of the web service used for creating the uml diagram."
         }
       }
     }
