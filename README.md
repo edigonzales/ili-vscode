@@ -63,3 +63,4 @@ https://marketplace.visualstudio.com/manage/publishers/edigonzales
 
 vsce login <publisher id>
 
+vsce publish
