@@ -13,7 +13,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         const config = vscode.workspace.getConfiguration('interlisCompiler');
-        const compilerUrl = config.get<string>('url') || 'https://ili2c.sogeo.services/api/compile';
+        const compilerUrl = config.get<string>('url') || 'https://ili.sogeo.services/api/compile';
 
         const document = editor.document;
         const content = document.getText();
@@ -54,7 +54,8 @@ export function activate(context: vscode.ExtensionContext) {
             return;
         }
 
-        const prettyPrintUrl = 'http://localhost:8080/api/prettyprint';
+        const config = vscode.workspace.getConfiguration('interlisPrettyPrint');
+        const prettyPrintUrl = config.get<string>('url') || 'https://ili.sogeo.services/api/prettyprint';
 
         const document = editor.document;
         const content = document.getText();
