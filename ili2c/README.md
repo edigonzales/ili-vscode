@@ -1,10 +1,10 @@
 # ili2c README
 
-This extensions uses a web service to compile an INTERLIS model file.
+This extensions uses a web service to compile, pretty print and diagrams an INTERLIS model file.
 
 ## Features
 
-Compiles the active file with an ili2c web service at https://ili2c.sogeo.services.
+- Compiles the active file with an ili2c web service at https://ili.sogeo.services.
 
 ## Requirements
 
@@ -19,6 +19,10 @@ none (so far)
 none (so far)
 
 ## Release Notes
+
+### 0.0.8
+
+### 0.0.7
 
 ### 0.0.6
 

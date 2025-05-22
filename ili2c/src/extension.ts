@@ -20,6 +20,9 @@ export function activate(context: vscode.ExtensionContext) {
         const compilerUrl = config.get<string>('url') || 'https://ili.sogeo.services/api/compile';
 
         const document = editor.document;
+        if (!document.fileName.endsWith('.ili')) {
+            return;
+        }
         const content = document.getText();
         const fileName = document.fileName.split('/').pop() || 'file.ili'; // default filename
 
@@ -41,6 +44,7 @@ export function activate(context: vscode.ExtensionContext) {
 
             if (response.ok) {
                 vscode.window.showInformationMessage('Compilation successful!');
+                outputChannel.show(true);
             } else {
                 vscode.window.showErrorMessage('Compilation failed. Check the "INTERLIS compiler" output.');
                 outputChannel.show(true);
@@ -62,6 +66,9 @@ export function activate(context: vscode.ExtensionContext) {
         const prettyPrintUrl = config.get<string>('url') || 'https://ili.sogeo.services/api/prettyprint';
 
         const document = editor.document;
+        if (!document.fileName.endsWith('.ili')) {
+            return;
+        }
         const content = document.getText();
         const fileName = document.fileName.split('/').pop() || 'file.ili'; // default filename
 
@@ -105,6 +112,9 @@ export function activate(context: vscode.ExtensionContext) {
         //const umlDiagramUrl = 'http://localhost:8080/api/uml';
 
         const document = editor.document;
+        if (!document.fileName.endsWith('.ili')) {
+            return;
+        }
         const content = document.getText();
         const fileName = document.fileName.split('/').pop() || 'file.ili'; // default filename
 
