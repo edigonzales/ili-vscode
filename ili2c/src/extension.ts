@@ -5,6 +5,7 @@ import * as path from 'path';
 import * as fs from 'fs';
 
 let currentUmlPanel: vscode.WebviewPanel | undefined = undefined;
+let currentMermaidUmlPanel: vscode.WebviewPanel | undefined = undefined;
 
 export function activate(context: vscode.ExtensionContext) {
     const outputChannel = vscode.window.createOutputChannel('INTERLIS compiler');
@@ -177,23 +178,20 @@ export function activate(context: vscode.ExtensionContext) {
                 } else {
                     const webviewContent = buffer.toString();
 
-                    console.log(webviewContent);
-                    
-
-                    if (currentUmlPanel) {
-                        currentUmlPanel.webview.html = webviewContent;
-                        currentUmlPanel.reveal(vscode.ViewColumn.Two);
+                    if (currentMermaidUmlPanel) {
+                        currentMermaidUmlPanel.webview.html = webviewContent;
+                        currentMermaidUmlPanel.reveal(vscode.ViewColumn.Two);
                     } else {
-                        currentUmlPanel = vscode.window.createWebviewPanel(
-                            'interlisUmlDiagram',
-                            'INTERLIS UML Diagram',
+                        currentMermaidUmlPanel = vscode.window.createWebviewPanel(
+                            'interlisMermaidUmlDiagram',
+                            'INTERLIS UML Diagram (Mermaid)',
                             vscode.ViewColumn.Two,
                             {enableScripts: true},
                         );
-                        currentUmlPanel.webview.html = webviewContent;
+                        currentMermaidUmlPanel.webview.html = webviewContent;
 
-                        currentUmlPanel.onDidDispose(() => {
-                            currentUmlPanel = undefined;
+                        currentMermaidUmlPanel.onDidDispose(() => {
+                            currentMermaidUmlPanel = undefined;
                         });
                     }
                 }

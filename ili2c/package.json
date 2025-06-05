@@ -2,7 +2,7 @@
   "name": "ilitools",
   "displayName": "INTERLIS Tools",
   "description": "INTERLIS Tools (web service)",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "publisher": "edigonzales",
   "license": "MIT",
   "repository": {
