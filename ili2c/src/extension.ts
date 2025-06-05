@@ -108,8 +108,11 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         const config = vscode.workspace.getConfiguration('interlisUmlDiagram');
-        const umlDiagramUrl = config.get<string>('url') || 'https://ili.sogeo.services/api/uml';
-        //const umlDiagramUrl = 'http://localhost:8080/api/uml';
+        //const umlDiagramUrl = config.get<string>('url') || 'https://ili.sogeo.services/api/uml';
+        const umlDiagramUrl = 'http://localhost:8080/api/uml';
+        const umlDiagramType = config.get<string>('diagramType');
+
+
 
         const document = editor.document;
         if (!document.fileName.endsWith('.ili')) {
@@ -121,6 +124,7 @@ export function activate(context: vscode.ExtensionContext) {
         try {
             const form = new FormData();
             form.append('file', Buffer.from(content), fileName);
+            form.append('vendor', umlDiagramType);
 
             const response = await fetch(umlDiagramUrl, {
                 method: 'POST',
@@ -131,43 +135,67 @@ export function activate(context: vscode.ExtensionContext) {
             if (response.ok) {
                 const buffer = await response.buffer();
 
-                // Create a temporary file to store the image
-                const tempDir = path.join(context.extensionPath, 'temp');
-                if (!fs.existsSync(tempDir)) {
-                    fs.mkdirSync(tempDir);
-                }
-                const imagePath = path.join(tempDir, 'uml_diagram.png');
-                fs.writeFileSync(imagePath, Buffer.from(buffer));
-                const resourcePath = vscode.Uri.file(imagePath);
-                const webviewUri = (currentUmlPanel?.webview)?.asWebviewUri(resourcePath);
-                const base64Image = Buffer.from(fs.readFileSync(imagePath)).toString('base64');
-                const imageDataUri = `data:image/png;base64,${base64Image}`;
+                if (umlDiagramType === "PLANTUML") {
+                    // Create a temporary file to store the image
+                    const tempDir = path.join(context.extensionPath, 'temp');
+                    if (!fs.existsSync(tempDir)) {
+                        fs.mkdirSync(tempDir);
+                    }
+                    const imagePath = path.join(tempDir, 'uml_diagram.png');
+                    fs.writeFileSync(imagePath, Buffer.from(buffer));
+                    const resourcePath = vscode.Uri.file(imagePath);
+                    const webviewUri = (currentUmlPanel?.webview)?.asWebviewUri(resourcePath);
+                    const base64Image = Buffer.from(fs.readFileSync(imagePath)).toString('base64');
+                    const imageDataUri = `data:image/png;base64,${base64Image}`;
 
-                const webviewContent = `<!DOCTYPE html>
-                                        <html>
-                                        <head>
-                                            <title>UML Diagram</title>
-                                        </head>
-                                        <body>
-                                            <img src="${imageDataUri}" />
-                                        </body>
-                                        </html>`;
+                    const webviewContent = `<!DOCTYPE html>
+                                            <html>
+                                            <head>
+                                                <title>UML Diagram</title>
+                                            </head>
+                                            <body>
+                                                <img src="${imageDataUri}" />
+                                            </body>
+                                            </html>`;
 
-                if (currentUmlPanel) {
-                    currentUmlPanel.webview.html = webviewContent;
-                    currentUmlPanel.reveal(vscode.ViewColumn.Two);
+                    if (currentUmlPanel) {
+                        currentUmlPanel.webview.html = webviewContent;
+                        currentUmlPanel.reveal(vscode.ViewColumn.Two);
+                    } else {
+                        currentUmlPanel = vscode.window.createWebviewPanel(
+                            'interlisUmlDiagram',
+                            'INTERLIS UML Diagram',
+                            vscode.ViewColumn.Two,
+                            {},
+                        );
+                        currentUmlPanel.webview.html = webviewContent;
+
+                        currentUmlPanel.onDidDispose(() => {
+                            currentUmlPanel = undefined;
+                        });
+                    }
                 } else {
-                    currentUmlPanel = vscode.window.createWebviewPanel(
-                        'interlisUmlDiagram',
-                        'INTERLIS UML Diagram',
-                        vscode.ViewColumn.Two,
-                        {},
-                    );
-                    currentUmlPanel.webview.html = webviewContent;
+                    const webviewContent = buffer.toString();
 
-                    currentUmlPanel.onDidDispose(() => {
-                        currentUmlPanel = undefined;
-                    });
+                    console.log(webviewContent);
+                    
+
+                    if (currentUmlPanel) {
+                        currentUmlPanel.webview.html = webviewContent;
+                        currentUmlPanel.reveal(vscode.ViewColumn.Two);
+                    } else {
+                        currentUmlPanel = vscode.window.createWebviewPanel(
+                            'interlisUmlDiagram',
+                            'INTERLIS UML Diagram',
+                            vscode.ViewColumn.Two,
+                            {enableScripts: true},
+                        );
+                        currentUmlPanel.webview.html = webviewContent;
+
+                        currentUmlPanel.onDidDispose(() => {
+                            currentUmlPanel = undefined;
+                        });
+                    }
                 }
             } else {
                 const errorText = await response.text();

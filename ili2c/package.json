@@ -1,8 +1,8 @@
 {
-  "name": "ili2c",
-  "displayName": "INTERLIS compiler",
-  "description": "INTERLIS compiler (web service)",
-  "version": "0.0.7",
+  "name": "ilitools",
+  "displayName": "INTERLIS Tools",
+  "description": "INTERLIS Tools (web service)",
+  "version": "0.0.8",
   "publisher": "edigonzales",
   "license": "MIT",
   "repository": {
@@ -26,7 +26,9 @@
     "validation",
     "compile",
     "compiler",
-    "interlis"
+    "interlis",
+    "prettyprint",
+    "uml"
   ],
   "activationEvents": [],
   "main": "./dist/extension.js",
@@ -67,7 +69,7 @@
     ],
     "configuration": {
       "type": "object",
-      "title": "Compiler Settings",
+      "title": "Ilitools Settings",
       "properties": {
         "interlisCompiler.url": {
           "type": "string",
@@ -83,6 +85,16 @@
           "type": "string",
           "default": "https://ili.sogeo.services/api/uml",
           "description": "The URL of the web service used for creating the uml diagram."
+        },
+        "interlisUmlDiagram.diagramType": {
+          "type": "string",
+          "enum": ["MERMAID", "PLANTUML"],
+          "enumDescriptions": [
+            "Use Mermaid for diagram rendering",
+            "Use PlantUML for diagram rendering"
+          ],
+          "default": "MERMAID",
+          "description": "Select the diagram type to use"
         }
       }
     }
