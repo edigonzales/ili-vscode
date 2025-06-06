@@ -109,8 +109,8 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         const config = vscode.workspace.getConfiguration('interlisUmlDiagram');
-        const umlDiagramUrl = config.get<string>('url') || 'https://ili.sogeo.services/api/uml';
-        //const umlDiagramUrl = 'http://localhost:8080/api/uml';
+        //const umlDiagramUrl = config.get<string>('url') || 'https://ili.sogeo.services/api/uml';
+        const umlDiagramUrl = 'http://localhost:8080/api/uml';
         const umlDiagramType = config.get<string>('diagramType');
 
 
@@ -176,7 +176,133 @@ export function activate(context: vscode.ExtensionContext) {
                         });
                     }
                 } else {
-                    const webviewContent = buffer.toString();
+                    const mermaidContent = buffer.toString();
+
+                    const webviewContent = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Mermaid Diagram</title>
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+
+    const baseCode = \`
+${mermaidContent}
+\`
+    ;
+
+    const renderDiagram = async () => {
+      const { svg } = await mermaid.render('theDiagram', baseCode);
+      const container = document.getElementById('diagramContainer');
+      container.innerHTML = svg;
+
+      // Enable pan/zoom
+      if (window.svgPanZoomInstance) {
+        window.svgPanZoomInstance.destroy();
+      }
+      const svgElement = container.querySelector('svg');
+      window.svgPanZoomInstance = svgPanZoom(svgElement, {
+        zoomEnabled: true,
+        controlIconsEnabled: true,
+        zoomScaleSensitivity: 0.2,
+        fit: true,
+        center: true,
+        minZoom: 0.2,
+        maxZoom: 10,
+        panEnabled: true
+      });
+
+      document.getElementById('downloadSvgBtn').onclick = () => {
+        const blob = new Blob([svg], { type: 'image/svg+xml' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'diagram.svg';
+        a.click();
+        URL.revokeObjectURL(url);
+      };
+
+      document.getElementById('copyCodeBtn').onclick = async () => {
+        const btnSpan = document.querySelector('#copyCodeBtn span');
+        try {
+          await navigator.clipboard.writeText(baseCode);
+          btnSpan.textContent = 'Copied!';
+          document.getElementById('copyCodeBtn').disabled = true;
+          setTimeout(() => {
+            btnSpan.textContent = 'Copy Mermaid Code';
+            document.getElementById('copyCodeBtn').disabled = false;
+          }, 4000);
+        } catch (err) {
+          console.error('Clipboard copy failed:', err);
+        }
+      };
+    };
+    
+    window.addEventListener('DOMContentLoaded', async () => {
+      await renderDiagram();
+    });
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/svg-pan-zoom@3.6.1/dist/svg-pan-zoom.min.js"></script>
+
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      font-family: sans-serif;
+    }
+
+    .controls {
+      padding: 1em;
+      background: white;
+      border-bottom: 1px solid #ccc;
+      display: flex;
+      gap: 1em;
+      flex-wrap: wrap;
+    }
+
+    button {
+      padding: 0.5em 1em;
+      font-size: 1em;
+      width: 240px;
+      cursor: pointer;
+      background: #ECECFF;
+      border: 2px solid #9370DA;
+      border-radius: 5px;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    #diagramContainer {
+      flex: 1;
+      background: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    svg {
+      width: 100%;
+      height: 100%;
+      max-width: 100% !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="controls">
+    <button id="downloadSvgBtn"><span>Download SVG</span></button>
+    <button id="copyCodeBtn"><span>Copy Mermaid Code</span></button>
+  </div>
+  <div id="diagramContainer"></div>
+</body>
+</html>`;
 
                     if (currentMermaidUmlPanel) {
                         currentMermaidUmlPanel.webview.html = webviewContent;
