@@ -109,8 +109,8 @@ export function activate(context: vscode.ExtensionContext) {
         }
 
         const config = vscode.workspace.getConfiguration('interlisUmlDiagram');
-        //const umlDiagramUrl = config.get<string>('url') || 'https://ili.sogeo.services/api/uml';
-        const umlDiagramUrl = 'http://localhost:8080/api/uml';
+        const umlDiagramUrl = config.get<string>('url') || 'https://ili.sogeo.services/api/uml';
+        //const umlDiagramUrl = 'http://localhost:8080/api/uml';
         const umlDiagramType = config.get<string>('diagramType');
 
 

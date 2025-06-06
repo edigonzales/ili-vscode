@@ -1,10 +1,13 @@
 # ili2c README
 
-This extensions uses a web service to compile, pretty print and diagrams an INTERLIS model file.
+This extension uses a web service to compile and pretty print an INTERLIS model file and to create UML diagrams from it.
 
 ## Features
 
-- Compiles the active file with an ili2c web service at https://ili.sogeo.services.
+- Compiling INTERLIS model file with ili2c.
+- Pretty Printing INTERLIS model file with UML/INTERLIS editor libraries.
+- Creating UML diagrams from INTERLIS model files (PlantUML and Mermaid).
+
 
 ## Requirements
 
@@ -12,13 +15,16 @@ If you have any requirements or dependencies, add a section describing those and
 
 ## Extension Settings
 
-none (so far)
+- URL for web service
+- UML diagram type (Mermaid or PlantUML)
 
 ## Known Issues
 
 none (so far)
 
 ## Release Notes
+
+### 0.0.9
 
 ### 0.0.8
 
