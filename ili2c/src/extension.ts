@@ -3,6 +3,8 @@ import fetch from 'node-fetch';
 import FormData from 'form-data';
 import * as path from 'path';
 import * as fs from 'fs';
+import * as os from 'os';
+import ili2c from 'ili2c';
 
 let currentUmlPanel: vscode.WebviewPanel | undefined = undefined;
 let currentMermaidUmlPanel: vscode.WebviewPanel | undefined = undefined;
@@ -24,6 +26,10 @@ export function activate(context: vscode.ExtensionContext) {
         if (!document.fileName.endsWith('.ili')) {
             return;
         }
+
+        const result = ili2c.compileModel(document.uri.fsPath, '/tmp/ili2c.log');
+        console.log(result);
+
         const content = document.getText();
         const fileName = document.fileName.split('/').pop() || 'file.ili'; // default filename
 
@@ -41,6 +47,8 @@ export function activate(context: vscode.ExtensionContext) {
 
             outputChannel.clear();
             outputChannel.appendLine(logText);
+
+            outputChannel.appendLine("XXXXX" + result);
             //outputChannel.show();
 
             if (response.ok) {
