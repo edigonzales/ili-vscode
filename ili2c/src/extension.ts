@@ -27,11 +27,19 @@ export function activate(context: vscode.ExtensionContext) {
             return;
         }
 
-        const result = ili2c.compileModel(document.uri.fsPath, '/tmp/ili2c.log');
+        const tempDir = os.tmpdir();
+        const logFileName = "ili2c.log";
+        const logFilePath = path.join(tempDir, logFileName);
+        const result = ili2c.compileModel(document.uri.fsPath, logFilePath);
         console.log(result);
 
+        const logFileContents = fs.readFileSync(logFilePath).toString()
+
+        
         const content = document.getText();
         const fileName = document.fileName.split('/').pop() || 'file.ili'; // default filename
+
+        // TODO delete logFile
 
         try {
             const form = new FormData();
@@ -62,6 +70,8 @@ export function activate(context: vscode.ExtensionContext) {
             vscode.window.showErrorMessage(`Compilation error: ${error}`);
             outputChannel.show(true);
         }
+
+
     });
 
     let prettyPrintCommand = vscode.commands.registerCommand('ili.prettyPrint', async () => {
