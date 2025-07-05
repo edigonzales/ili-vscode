@@ -19,8 +19,8 @@ export function activate(context: vscode.ExtensionContext) {
             return;
         }
 
-        const config = vscode.workspace.getConfiguration('interlisCompiler');
-        const compilerUrl = config.get<string>('url') || 'https://ili.sogeo.services/api/compile';
+        // const config = vscode.workspace.getConfiguration('interlisCompiler');
+        // const compilerUrl = config.get<string>('url') || 'https://ili.sogeo.services/api/compile';
 
         const document = editor.document;
         if (!document.fileName.endsWith('.ili')) {
@@ -31,45 +31,54 @@ export function activate(context: vscode.ExtensionContext) {
         const logFileName = "ili2c.log";
         const logFilePath = path.join(tempDir, logFileName);
         const result = ili2c.compileModel(document.uri.fsPath, logFilePath);
-        console.log(result);
 
-        const logFileContents = fs.readFileSync(logFilePath).toString()
+        const logFileContents = fs.readFileSync(logFilePath).toString();
 
-        
-        const content = document.getText();
-        const fileName = document.fileName.split('/').pop() || 'file.ili'; // default filename
+        outputChannel.clear();
+        outputChannel.appendLine(logFileContents);
 
-        // TODO delete logFile
-
-        try {
-            const form = new FormData();
-            form.append('file', Buffer.from(content), fileName);
-
-            const response = await fetch(compilerUrl, {
-                method: 'POST',
-                body: form,
-                headers: form.getHeaders()
-            });
-
-            const logText = await response.text();
-
-            outputChannel.clear();
-            outputChannel.appendLine(logText);
-
-            outputChannel.appendLine("XXXXX" + result);
-            //outputChannel.show();
-
-            if (response.ok) {
-                vscode.window.showInformationMessage('Compilation successful!');
-                outputChannel.show(true);
-            } else {
-                vscode.window.showErrorMessage('Compilation failed. Check the "INTERLIS compiler" output.');
-                outputChannel.show(true);
-            }
-        } catch (error) {
-            vscode.window.showErrorMessage(`Compilation error: ${error}`);
+        if (result) {
+            vscode.window.showInformationMessage('Compilation successful!');
+            outputChannel.show(true);
+        } else {
+            vscode.window.showErrorMessage('Compilation failed. Check the "INTERLIS compiler" output.');
             outputChannel.show(true);
         }
+        
+        // const content = document.getText();
+        // const fileName = document.fileName.split('/').pop() || 'file.ili'; // default filename
+
+        // // TODO delete logFile
+
+        // try {
+        //     const form = new FormData();
+        //     form.append('file', Buffer.from(content), fileName);
+
+        //     const response = await fetch(compilerUrl, {
+        //         method: 'POST',
+        //         body: form,
+        //         headers: form.getHeaders()
+        //     });
+
+        //     const logText = await response.text();
+
+        //     outputChannel.clear();
+        //     outputChannel.appendLine(logText);
+
+        //     outputChannel.appendLine("XXXXX" + result);
+        //     //outputChannel.show();
+
+        //     if (response.ok) {
+        //         vscode.window.showInformationMessage('Compilation successful!');
+        //         outputChannel.show(true);
+        //     } else {
+        //         vscode.window.showErrorMessage('Compilation failed. Check the "INTERLIS compiler" output.');
+        //         outputChannel.show(true);
+        //     }
+        // } catch (error) {
+        //     vscode.window.showErrorMessage(`Compilation error: ${error}`);
+        //     outputChannel.show(true);
+        // }
 
 
     });
@@ -81,42 +90,15 @@ export function activate(context: vscode.ExtensionContext) {
             return;
         }
 
-        const config = vscode.workspace.getConfiguration('interlisPrettyPrint');
-        const prettyPrintUrl = config.get<string>('url') || 'https://ili.sogeo.services/api/prettyprint';
-
         const document = editor.document;
         if (!document.fileName.endsWith('.ili')) {
             return;
         }
-        const content = document.getText();
-        const fileName = document.fileName.split('/').pop() || 'file.ili'; // default filename
 
-        try {
-            const form = new FormData();
-            form.append('file', Buffer.from(content), fileName);
+        const tempDir = os.tmpdir();
+        const result = ili2c.prettyPrint(document.uri.fsPath);
 
-            const response = await fetch(prettyPrintUrl, {
-                method: 'POST',
-                body: form,
-                headers: form.getHeaders()
-            });
-
-            if (response.ok) {
-                const prettyPrintedContent = await response.text();
-                await editor.edit(editBuilder => {
-                    const firstLine = document.lineAt(0);
-                    const lastLine = document.lineAt(document.lineCount - 1);
-                    const range = new vscode.Range(firstLine.range.start, lastLine.range.end);
-                    editBuilder.replace(range, prettyPrintedContent);
-                });
-                vscode.window.showInformationMessage('File pretty printed successfully!');
-            } else {
-                const errorText = await response.text();
-                vscode.window.showErrorMessage(`Pretty print failed: ${response.statusText} - ${errorText}`);
-            }
-        } catch (error) {
-            vscode.window.showErrorMessage(`Pretty print error: ${error}`);
-        }
+        // TODO: if result !=0 
     });
 
     let umlDiagramCommand = vscode.commands.registerCommand('ili.createUmlDiagram', async () => {

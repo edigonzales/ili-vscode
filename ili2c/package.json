@@ -103,9 +103,9 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run package && cp -r prebuilds dist/",
+    "vscode:prepublish": "npm run package && mkdir -p dist/prebuilds && cp -r node_modules/ili2c/prebuilds/* dist/prebuilds/",
     "compile": "npm run check-types && npm run lint && node esbuild.js",
-    "watch": "cp -r node_modules/ili2c/prebuilds dist/ && npm-run-all -p watch:*",
+    "watch": "mkdir -p dist/prebuilds && cp -r node_modules/ili2c/prebuilds/* dist/prebuilds/ && npm-run-all -p watch:*",
     "watch:esbuild": "node esbuild.js --watch",
     "watch:tsc": "tsc --noEmit --watch --project tsconfig.json",
     "package": "npm run check-types && npm run lint && node esbuild.js --production",
@@ -133,7 +133,7 @@
   "dependencies": {
     "axios": "^1.9.0",
     "form-data": "^4.0.0",
-    "ili2c": "^0.0.22",
+    "ili2c": "^0.0.27",
     "node-fetch": "^2"
   }
 }
